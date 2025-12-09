@@ -1,0 +1,16 @@
+# 编译输出
+*.pdf
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Typst 缓存
+.typst/
