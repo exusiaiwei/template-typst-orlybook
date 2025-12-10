@@ -14,6 +14,9 @@
 // 目录
 #make-outline()
 
+// 序言
+#include "chapters/preamble.typ"
+
 // 正文内容
 #include "chapters/1_intro.typ"
 

@@ -239,17 +239,21 @@ def hello():
 
 ## 🔤 字体配置
 
-默认字体回退顺序：
+默认字体配置（已优化为中文学术场景）：
 
-- **正文**：Georgia → SimSun → Noto Serif CJK SC
-- **标题**：Arial → SimHei → Noto Sans CJK SC
-- **代码**：Consolas → SimSun
+- **正文**：Source Han Serif SC (思源宋体) → Noto Serif SC → SimSun
+- **标题**：Source Han Sans (思源黑体) → Noto Sans SC → Microsoft YaHei
+- **代码**：JetBrains Mono → Cascadia Code → Consolas
 
 如需自定义，修改 `orly-config.typ`：
 
 ```typst
-#let font-serif = ("你的衬线字体", "SimSun")
-#let font-sans = ("你的无衬线字体", "SimHei")
+// 正文字体
+#let font-serif = ("Source Han Serif SC", "SimSun")
+// 标题字体
+#let font-sans = ("Source Han Sans", "Microsoft YaHei")
+// 代码字体
+#let font-mono = ("JetBrains Mono", "Consolas")
 #let font-mono = ("你的等宽字体", "Consolas")
 ```
 

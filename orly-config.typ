@@ -8,19 +8,26 @@
 // ============================================================================
 
 // 🎨 主题色
-#let theme-color = rgb("#6C3483")
+#let theme-color = rgb("#894e54")
 
 // 📖 书籍信息
-#let book-title = "深度学习基础"
+#let book-title = "深度学习基础101"
 #let book-subtitle = "从理论到实践的完整指南"
 #let book-author = "张三"
 #let book-top-text = "THE DEFINITIVE GUIDE"
 #let book-publisher = "Personal Notes"
 
 // 🔤 字体配置
-#let font-serif = ("Georgia", "SimSun", "Noto Serif CJK SC")
-#let font-sans = ("Arial", "SimHei", "Noto Sans CJK SC")
-#let font-mono = ("Consolas", "SimSun")
+
+// === 正文字体（优化屏显阅读）===
+#let font-serif = ("FZPingXianYaSongS-R-GB", "Source Han Serif SC", "SimSun")
+#let font-sans = ("Source Han Sans", "Microsoft YaHei")
+#let font-mono = ("JetBrains Mono", "Iosevka", "Consolas")
+
+// === 封面字体（强调设计感）===
+// Georgia + 思源宋体：都是衬线体，风格协调且庄重
+#let font-cover-title = ("Georgia", "Source Han Serif SC", "STSong")
+#let font-cover-text = ("Georgia", "Source Han Serif SC", "SimSun")
 
 // ============================================================================
 // 📄 文档模板
@@ -34,7 +41,37 @@
 
   set page(
     paper: "a4",
-    margin: (x: 2.5cm, y: 3cm),
+    margin: (x: 2.5cm, top: 3cm, bottom: 2.5cm),
+    // 页眉：显示当前章节标题（主题色 + 细线）
+    header: context {
+      let page-num = counter(page).get().first()
+      if page-num > 1 {
+        let chapter = query(selector(heading.where(level: 1)).before(here()))
+        if chapter.len() > 0 {
+          let title = chapter.last().body
+          set text(size: 9pt)
+          align(center)[
+            #text(fill: theme-color, weight: "medium")[#title]
+          ]
+          v(3pt)
+          line(length: 100%, stroke: 0.4pt + theme-color.lighten(60%))
+        }
+      }
+    },
+    // 页脚：主题色页码
+    footer: context {
+      let page-num = counter(page).get().first()
+      if page-num > 0 {
+        align(center)[
+          #text(
+            font: font-sans,
+            size: 10pt,
+            weight: "medium",
+            fill: theme-color,
+          )[#page-num]
+        ]
+      }
+    },
   )
 
   set text(
@@ -52,10 +89,10 @@
   // 标题样式
   set heading(numbering: "1.1")
 
-  // 一级标题前换页
+  // 一级标题（章节自动分页）
   show heading.where(level: 1): it => {
-    // 使用 colbreak 替代 pagebreak 来避免容器内报错
-    v(2em)
+    pagebreak(weak: true)  // 章节前分页
+    v(0.5em)
     text(
       font: font-sans,
       size: 24pt,
@@ -143,6 +180,11 @@
   show link: it => {
     text(fill: theme-color, it)
   }
+
+  // ========== 脚注样式 ==========
+  set footnote.entry(
+    separator: line(length: 25%, stroke: 0.5pt + luma(200)),
+  )
 
   doc
 }
@@ -233,7 +275,7 @@
         top + center,
         dy: (top-bar-height - 12pt) / 2,
         text(
-          font: ("Georgia", "SimSun"),
+          font: font-cover-text,
           size: 11pt,
           style: "italic",
           fill: white,
@@ -254,7 +296,7 @@
         dy: title-block-top + 25pt,
         dx: side-margin,
         text(
-          font: ("Georgia", "SimHei"),
+          font: font-cover-title,
           size: 32pt,
           weight: "bold",
           fill: white,
@@ -267,8 +309,9 @@
         dy: title-block-top + 75pt,
         dx: side-margin,
         text(
-          font: ("Georgia", "SimSun"),
+          font: font-cover-text,
           size: 14pt,
+          weight: "medium",
           style: "italic",
           fill: white.lighten(10%),
         )[#book-subtitle]
@@ -283,9 +326,9 @@
         dy: -20pt,
         dx: side-margin,
         text(
-          font: ("Arial", "SimHei"),
+          font: font-cover-text,
           size: 14pt,
-          weight: "bold",
+          weight: "semibold",
           fill: luma(20),
         )[#book-publisher]
       )
@@ -296,10 +339,11 @@
         dy: -20pt,
         dx: -side-margin,
         text(
-          font: ("Georgia", "SimSun"),
+          font: font-cover-text,
           size: 12pt,
+          weight: "medium",
           style: "italic",
-          fill: luma(50),
+          fill: luma(40),
         )[#book-author]
       )
 
@@ -328,11 +372,12 @@
 
 #let make-outline() = {
   text(
-    font: ("Arial", "SimHei"),
+    font: font-sans,
     size: 24pt,
     weight: "bold",
     fill: theme-color,
   )[目录]
   v(1.5em)
   outline(title: none, indent: 2em, depth: 2)
+  pagebreak()
 }
